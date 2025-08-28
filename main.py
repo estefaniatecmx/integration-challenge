@@ -1,14 +1,17 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
+# Importamos lo necesario para crear la web y manejar archivos
+from fastapi import FastAPI  
+from fastapi.staticfiles import StaticFiles  
+from fastapi.responses import FileResponse  
+import os  
 
-# Create the FastAPI app
+# Creamos la aplicación web
 app = FastAPI()
 
+# Hacemos accesible la carpeta "static" para que el navegador pueda ver sus archivos
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
-class Example(BaseModel):
-    name: str
-
-
-@app.get("/", response_model=list[Example])
-async def get_examples():
-    return [Example(name="example")]
+# Endpoint para el favicon (icono de la pestaña)
+@app.get("/favicon.ico")
+async def favicon():
+    # Devuelve el archivo "favicon.png" que está dentro de "static"
+    return FileResponse(os.path.join("static", "favicon.png"))
